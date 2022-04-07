@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Post from "./components/post/Post";
 import "./App.css";
-import { db, auth } from "./Firebase/FirebaseInit";
+import { db, auth } from "./firebase/FirebaseInit";
 import { makeStyles } from "@material-ui/core";
 import Modal from "@material-ui/core/Modal";
+import ImageUpload from "./components/imageUpload/ImageUpload";
 
 function getModalStyle() {
   const top = 50;
@@ -24,6 +25,7 @@ const useStyles = makeStyles(() => ({
     borderRadius: "12px",
   },
 }));
+
 function App() {
   const classes = useStyles();
   const [modalStyle] = useState(getModalStyle);
@@ -45,6 +47,7 @@ function App() {
       }
     });
   }, [user, username]);
+
   useEffect(() => {
     db.collection("posts")
       .orderBy("timestamp", "desc")
@@ -81,6 +84,7 @@ function App() {
     setEmail("");
     setPassword("");
   };
+
   return (
     <div className="app">
       <Modal open={openSignup} onClose={() => setOpenSignup(false)}>
@@ -117,7 +121,7 @@ function App() {
           <center className="authFooter">
             <small>
               &copy; 2021 Instagram Tribute by{" "}
-              <a href="mailto:bkrofegha@gmail.com"> blessing Krofegha</a>
+              <a href="mailto:bkrofegha@gmail.com"> Blessing Krofegha</a>
             </small>
           </center>
         </div>
@@ -184,16 +188,18 @@ function App() {
         </div>
       </div>
       <div className="timeline">
+        {user && <ImageUpload user={user} />}
         {posts.map(({ id, post }) => (
           <Post
             key={id}
             postId={id}
-            user={user} 
+            user={user}
             username={post.username}
             caption={post.caption}
             imageUrl={post.imageUrl}
           />
-        ))}
+        ))
+        }
       </div>
     </div>
   );
